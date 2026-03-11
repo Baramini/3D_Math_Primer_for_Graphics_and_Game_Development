@@ -2,7 +2,7 @@
 
 > 📖 Based on *3D Math Primer for Graphics and Game Development* (2nd Edition)
 
-A learning project implementing core game math concepts directly in C++. 
+A learning project implementing core game math concepts directly in C++.  
 Beyond simple code writing, the goal is to understand how each mathematical concept is actually utilized within a game engine.
 
 ---
@@ -36,7 +36,7 @@ GameMath/
 │   ├── Vector3.h         # 3D vector
 │   └── main.cpp
 ├── tests/
-│   └── main.cpp          # Code for test
+│   └── main.cpp          # Test code
 └── CMakeLists.txt
 ```
 
@@ -44,17 +44,41 @@ GameMath/
 
 ## 📐 Implementations
 
-### ✅ Vector
-| Module | Explanation |
+### ✅ Vector2
+| Function | Description |
 |---|---|
-| `Vector2<T>` | 2D vector, Template-based automatic type inference |
-| `Vector3<T>` | 3D vector, Template-based automatic type inference |
+| `operator + - * /` | Arithmetic operators |
+| `operator-()` | Negation |
+| `dot()` | Dot product |
+| `cross()` | 2D cross product (scalar) |
+| `length()` | Magnitude |
+| `normalize()` | Unit vector |
+| `cosAngle()` | Cosine of angle between vectors |
+| `sinAngle()` | Sine of angle between vectors |
+| `lerp()` | Linear interpolation |
+| `lerpClamp()` | Linear interpolation clamped to [0, 1] |
+| `distance()` | Distance between two positions |
+
+### ✅ Vector3
+| Function | Description |
+|---|---|
+| `operator + - * /` | Arithmetic operators |
+| `operator-()` | Negation |
+| `dot()` | Dot product |
+| `cross()` | Cross product |
+| `length()` | Magnitude |
+| `normalize()` | Unit vector |
+| `cosAngle()` | Cosine of angle between vectors |
+| `sinAngle()` | Sine of angle between vectors |
+| `lerp()` | Linear interpolation |
+| `lerpClamp()` | Linear interpolation clamped to [0, 1] |
+| `distance()` | Distance between two positions |
 
 ### 🔲 Coming Soon
-- `Matrix4x4` — Transformation Matrix
-- `Quaternion` — Rotation Representation
-- `Camera` — View / Projection Transformation
-- `Collider` — AABB, Sphere Detecting Collider
+- `Matrix4x4` — Transformation matrix
+- `Quaternion` — Rotation representation
+- `Camera` — View / Projection transformation
+- `Collider` — AABB, Sphere collision detection
 
 ---
 
