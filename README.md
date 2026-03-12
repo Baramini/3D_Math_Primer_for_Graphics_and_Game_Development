@@ -32,6 +32,7 @@ Beyond simple code writing, the goal is to understand how each mathematical conc
 GameMath/
 ├── src/
 │   ├── myMath.h          # Entry point for all math libraries
+│   ├── MathUtils.h       # Utility functions (nearlyEqual, toRadians, etc.)
 │   ├── Vector2.h         # 2D vector
 │   ├── Vector3.h         # 3D vector
 │   └── main.cpp
@@ -73,6 +74,15 @@ GameMath/
 | `lerp()` | Linear interpolation |
 | `lerpClamp()` | Linear interpolation clamped to [0, 1] |
 | `distance()` | Distance between two positions |
+
+### ✅ CoordinateSpace
+| Function | Description |
+|---|---|
+| `isOrthogonal()` | Validates that basis vectors are orthonormal |
+| `localToWorld()` | Transforms a position from local space to world space |
+| `worldToLocal()` | Transforms a position from world space to local space |
+
+> `worldSpace` — Predefined world coordinate space at origin (0, 0, 0)
 
 ### 🔲 Coming Soon
 - `Matrix4x4` — Transformation matrix
