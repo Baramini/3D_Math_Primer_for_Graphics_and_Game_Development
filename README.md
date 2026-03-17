@@ -32,9 +32,11 @@ Beyond simple code writing, the goal is to understand how each mathematical conc
 GameMath/
 ├── src/
 │   ├── myMath.h          # Entry point for all math libraries
-│   ├── MathUtils.h       # Utility functions (nearlyEqual, toRadians, etc.)
-│   ├── Vector2.h         # 2D vector
-│   ├── Vector3.h         # 3D vector
+│   ├── mathUtils.h       # Utility functions (nearlyEqual, toRadians, etc.)
+│   ├── vector2.h         # 2D vector
+│   ├── vector3.h         # 3D vector
+│   ├── vector4.h         # 4D vector (homogeneous coordinates)
+│   ├── matrix4x4.h       # 4x4 transformation matrix
 │   └── main.cpp
 ├── tests/
 │   └── main.cpp          # Test code
@@ -75,6 +77,35 @@ GameMath/
 | `lerpClamp()` | Linear interpolation clamped to [0, 1] |
 | `distance()` | Distance between two positions |
 
+### ✅ Vector4
+| Function | Description |
+|---|---|
+| `operator + - * /` | Arithmetic operators |
+| `operator-()` | Negation |
+| `operator*(Matrix4x4)` | Vector-matrix multiplication (row vector) |
+| `dot()` | Dot product |
+| `perspectiveDivide()` | Perspective divide (clip space → NDC) |
+| `xyz()` | Extract xyz components as Vector3 |
+
+> `Vector4f`, `Vector4d` type aliases provided
+
+### ✅ Matrix4x4
+| Function | Description |
+|---|---|
+| `identity()` | Identity matrix |
+| `zero()` | Zero matrix |
+| `operator+` | Matrix addition |
+| `operator*(float)` | Scalar multiplication |
+| `operator*(Matrix4x4)` | Matrix multiplication |
+| `transpose()` | Transpose matrix *(declared)* |
+| `determinant()` | Determinant *(declared)* |
+| `inverse()` | Inverse matrix *(declared)* |
+| `makeTranslation()` | Translation matrix *(declared)* |
+| `makeScale()` | Scale matrix *(declared)* |
+| `makeRotationX/Y/Z()` | Rotation matrix *(declared)* |
+
+> Row vector convention — transformations applied as `v * M`
+
 ### ✅ CoordinateSpace
 | Function | Description |
 |---|---|
@@ -85,7 +116,7 @@ GameMath/
 > `worldSpace` — Predefined world coordinate space at origin (0, 0, 0)
 
 ### 🔲 Coming Soon
-- `Matrix4x4` — Transformation matrix
+- `Matrix4x4` — Full implementation (transpose, determinant, inverse, transform matrices)
 - `Quaternion` — Rotation representation
 - `Camera` — View / Projection transformation
 - `Collider` — AABB, Sphere collision detection

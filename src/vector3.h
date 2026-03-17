@@ -63,3 +63,6 @@ struct Vector3 {
 
 template<typename X, typename Y, typename Z>
 Vector3(X, Y, Z) -> Vector3<std::common_type_t<X, Y, Z>>;
+
+using Vector3f = Vector3<float>;
+using Vector3d = Vector3<double>;

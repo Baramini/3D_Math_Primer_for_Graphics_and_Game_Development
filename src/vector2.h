@@ -63,3 +63,6 @@ struct Vector2 {
 
 template<typename X, typename Y>
 Vector2(X, Y) -> Vector2<std::common_type_t<X, Y>>;
+
+using Vector2f = Vector2<float>;
+using Vector2d = Vector2<double>;
