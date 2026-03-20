@@ -97,12 +97,13 @@ GameMath/
 | `operator+` | Matrix addition |
 | `operator*(float)` | Scalar multiplication |
 | `operator*(Matrix4x4)` | Matrix multiplication |
-| `transpose()` | Transpose matrix *(declared)* |
+| `transpose()` | Transpose matrix |
 | `determinant()` | Determinant *(declared)* |
 | `inverse()` | Inverse matrix *(declared)* |
 | `makeTranslation()` | Translation matrix *(declared)* |
 | `makeScale()` | Scale matrix *(declared)* |
-| `makeRotationX/Y/Z()` | Rotation matrix *(declared)* |
+| `makeRotationX/Y/Z(float)` | Rotation matrix for X/Y/Z-axis |
+| `makeRotation(Vector3f, float)` | Rotation matrix for an arbitrary axis |
 
 > Row vector convention — transformations applied as `v * M`
 
@@ -116,7 +117,6 @@ GameMath/
 > `worldSpace` — Predefined world coordinate space at origin (0, 0, 0)
 
 ### 🔲 Coming Soon
-- `Matrix4x4` — Full implementation (transpose, determinant, inverse, transform matrices)
 - `Quaternion` — Rotation representation
 - `Camera` — View / Projection transformation
 - `Collider` — AABB, Sphere collision detection
