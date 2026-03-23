@@ -77,6 +77,8 @@ GameMath/
 | `lerpClamp()` | Linear interpolation clamped to [0, 1] |
 | `distance()` | Distance between two positions |
 
+> `Vector3f`, `Vector3d` type aliases provided
+
 ### ✅ Vector4
 | Function | Description |
 |---|---|
@@ -90,22 +92,44 @@ GameMath/
 > `Vector4f`, `Vector4d` type aliases provided
 
 ### ✅ Matrix4x4
+
+> Row vector convention — transformations applied as `v * M`
+
+**Construction**
 | Function | Description |
 |---|---|
 | `identity()` | Identity matrix |
 | `zero()` | Zero matrix |
-| `operator+` | Matrix addition |
+
+**Operators**
+| Function | Description |
+|---|---|
+| `operator+(Matrix4x4)` | Matrix addition |
 | `operator*(float)` | Scalar multiplication |
 | `operator*(Matrix4x4)` | Matrix multiplication |
-| `transpose()` | Transpose matrix |
-| `determinant()` | Determinant *(declared)* |
-| `inverse()` | Inverse matrix *(declared)* |
-| `makeTranslation()` | Translation matrix *(declared)* |
-| `makeScale()` | Scale matrix *(declared)* |
-| `makeRotationX/Y/Z(float)` | Rotation matrix for X/Y/Z-axis |
-| `makeRotation(Vector3f, float)` | Rotation matrix for an arbitrary axis |
 
-> Row vector convention — transformations applied as `v * M`
+**Linear Transforms**
+| Function | Description |
+|---|---|
+| `makeRotationX(angle)` | Rotation matrix around X axis |
+| `makeRotationY(angle)` | Rotation matrix around Y axis |
+| `makeRotationZ(angle)` | Rotation matrix around Z axis |
+| `makeRotation(vec, angle)` | Rotation matrix around arbitrary axis (Rodrigues) |
+| `makeScale(x, y, z)` | Scale matrix along cardinal axes |
+| `makeScale(vec, k)` | Scale matrix along arbitrary axis |
+| `makeOrthoProj(vec)` | Orthographic projection onto plane (equivalent to makeScale k=0) |
+| `makeReflection(vec)` | Reflection about plane (equivalent to makeScale k=-1) |
+| `makeShearingXY(x, y)` | Shear X and Y by Z |
+| `makeShearingYZ(y, z)` | Shear Y and Z by X |
+| `makeShearingXZ(x, z)` | Shear X and Z by Y |
+
+**Pending Implementation**
+| Function | Description |
+|---|---|
+| `transpose()` | Transpose matrix |
+| `determinant()` | Determinant |
+| `inverse()` | Inverse matrix |
+| `makeTranslation(x, y, z)` | Translation matrix |
 
 ### ✅ CoordinateSpace
 | Function | Description |
@@ -117,8 +141,9 @@ GameMath/
 > `worldSpace` — Predefined world coordinate space at origin (0, 0, 0)
 
 ### 🔲 Coming Soon
+- `Matrix4x4` — Full implementation (transpose, determinant, inverse, translation)
 - `Quaternion` — Rotation representation
-- `Camera` — View / Projection transformation
+- `Camera` — View / Projection transformation (OpenGL integration)
 - `Collider` — AABB, Sphere collision detection
 
 ---

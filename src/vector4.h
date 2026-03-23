@@ -3,6 +3,7 @@ template<typename T>
 struct Vector4 {
     T x, y, z, w;
 
+    Vector4() : x((T)0), y((T)0), z((T)0), w((T)0) {}
     Vector4(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {}
 
     // operator overloading
