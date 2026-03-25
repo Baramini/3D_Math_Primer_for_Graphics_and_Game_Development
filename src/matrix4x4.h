@@ -58,14 +58,61 @@ struct Matrix4x4 {
             m[0][3], m[1][3], m[2][3], m[3][3]
         );
     };
-    float     determinant() const; // 행렬식
+    float cofactor(int r, int c) const {
+        float c_array[3][3];
+        int row_index = -1;
+        int column_index = -1;
+        for (int i = 0; i < r; i++) {
+            row_index++;
+            column_index = -1;
+            for (int j = 0; j < c; j++) {
+                column_index++;
+                c_array[row_index][column_index] = m[i][j];
+            }
+            for (int j = c + 1; j < 4; j++) {
+                column_index++;
+                c_array[row_index][column_index] = m[i][j];
+            }
+        }
+        for (int i = r + 1; i < 4; i++) {
+            row_index++;
+            column_index = -1;
+            for (int j = 0; j < c; j++) {
+                column_index++;
+                c_array[row_index][column_index] = m[i][j];
+            }
+            for (int j = c + 1; j < 4; j++) {
+                column_index++;
+                c_array[row_index][column_index] = m[i][j];
+            }
+        }
+
+        float result = {
+            c_array[0][0] * c_array[1][1] * c_array[2][2] +
+            c_array[1][0] * c_array[2][1] * c_array[0][2] +
+            c_array[2][0] * c_array[0][1] * c_array[1][2] -
+            c_array[0][2] * c_array[1][1] * c_array[2][0] -
+            c_array[1][2] * c_array[2][1] * c_array[0][0] -
+            c_array[2][2] * c_array[0][1] * c_array[1][0]
+        };
+
+        return ((r + c) % 2 == 0) ? result : -result;
+    }
+    float determinant() const {
+        float result = 0.0f;
+        for (int i = 0; i < 4; i++) {
+            result += (m[0][i] * cofactor(0, i));
+        }
+
+        return result;
+    }
     Matrix4x4 inverse() const;     // 역행렬 (카메라에서 핵심)
 
     // matrix function
     static Matrix4x4 identity();
     static Matrix4x4 zero();
     
-    // affine transformation
+    // Linear transformation
     static Matrix4x4 makeRotationX(float angle);
     static Matrix4x4 makeRotationY(float angle);
     static Matrix4x4 makeRotationZ(float angle);

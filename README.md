@@ -33,6 +33,7 @@ GameMath/
 ├── src/
 │   ├── myMath.h          # Entry point for all math libraries
 │   ├── mathUtils.h       # Utility functions (nearlyEqual, toRadians, etc.)
+│   ├── testUtils.h       # Test utility functions (drawLine2D, visualize2D)
 │   ├── vector2.h         # 2D vector
 │   ├── vector3.h         # 3D vector
 │   ├── vector4.h         # 4D vector (homogeneous coordinates)
@@ -123,11 +124,16 @@ GameMath/
 | `makeShearingYZ(y, z)` | Shear Y and Z by X |
 | `makeShearingXZ(x, z)` | Shear X and Z by Y |
 
+**Matrix Operations**
+| Function | Description |
+|---|---|
+| `cofactor(r, c)` | Cofactor of element at row r, column c |
+| `determinant()` | Determinant via cofactor expansion |
+
 **Pending Implementation**
 | Function | Description |
 |---|---|
 | `transpose()` | Transpose matrix |
-| `determinant()` | Determinant |
 | `inverse()` | Inverse matrix |
 | `makeTranslation(x, y, z)` | Translation matrix |
 
@@ -140,8 +146,16 @@ GameMath/
 
 > `worldSpace` — Predefined world coordinate space at origin (0, 0, 0)
 
+### ✅ Test Utilities (`testUtils.h`)
+| Function | Description |
+|---|---|
+| `drawLine2D()` | Draws a line on ASCII grid using Bresenham's algorithm |
+| `visualize2D()` | Renders transformed 2D points on ASCII grid |
+
+---
+
 ### 🔲 Coming Soon
-- `Matrix4x4` — Full implementation (transpose, determinant, inverse, translation)
+- `Matrix4x4` — Full implementation (transpose, inverse, translation)
 - `Quaternion` — Rotation representation
 - `Camera` — View / Projection transformation (OpenGL integration)
 - `Collider` — AABB, Sphere collision detection

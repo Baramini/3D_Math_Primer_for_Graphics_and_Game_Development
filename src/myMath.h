@@ -11,6 +11,8 @@
 
 #include "matrix4x4.h"
 
+#include "testUtils.h"
+
 Vector4f operator*(const Vector4f& vec, const Matrix4x4& mat) {
     Vector4f result(0.0f, 0.0f, 0.0f, 0.0f);
     result.x += (vec.x * mat.m[0][0] + vec.y * mat.m[1][0] + vec.z * mat.m[2][0] + vec.w * mat.m[3][0]);
