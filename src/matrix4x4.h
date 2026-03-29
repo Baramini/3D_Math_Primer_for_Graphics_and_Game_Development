@@ -19,95 +19,20 @@ struct Matrix4x4 {
         m[3][0]=m30; m[3][1]=m31; m[3][2]=m32; m[3][3]=m33;
     }
 
-    // matrix operation
-    Matrix4x4 operator+(const Matrix4x4& mat) const {
-        return Matrix4x4(
-            m[0][0] + mat.m[0][0], m[0][1] + mat.m[0][1], m[0][2] + mat.m[0][2], m[0][3] + mat.m[0][3],
-            m[1][0] + mat.m[1][0], m[1][1] + mat.m[1][1], m[1][2] + mat.m[1][2], m[1][3] + mat.m[1][3],
-            m[2][0] + mat.m[2][0], m[2][1] + mat.m[2][1], m[2][2] + mat.m[2][2], m[2][3] + mat.m[2][3],
-            m[3][0] + mat.m[3][0], m[3][1] + mat.m[3][1], m[3][2] + mat.m[3][2], m[3][3] + mat.m[3][3]
-        );
-    }
-    Matrix4x4 operator*(float scalar) const {
-        return Matrix4x4(
-            m[0][0] * scalar, m[0][1] * scalar, m[0][2] * scalar, m[0][3] * scalar,
-            m[1][0] * scalar, m[1][1] * scalar, m[1][2] * scalar, m[1][3] * scalar,
-            m[2][0] * scalar, m[2][1] * scalar, m[2][2] * scalar, m[2][3] * scalar,
-            m[3][0] * scalar, m[3][1] * scalar, m[3][2] * scalar, m[3][3] * scalar
-        );
-    }
-    Matrix4x4 operator*(const Matrix4x4& mat) const {
-        Matrix4x4 result;
-        result = result.zero();
+    // < const function >
+    // matrix operator overloading
+    Matrix4x4 operator+(const Matrix4x4& mat) const;
+    Matrix4x4 operator*(float scalar) const;
+    Matrix4x4 operator*(const Matrix4x4& mat) const;
 
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                for (int k = 0; k < 4; k++) {
-                    result.m[i][j] += m[i][k] * mat.m[k][j];
-                }
-            }
-        }
+    // matrix function
+    float cofactor(int r, int c) const;
+    float determinant() const;
+    Matrix4x4 transpose() const;
+    Matrix4x4 inverse() const;
+    Matrix4x4 orthogonalize() const;
 
-        return result;
-    }
-    Matrix4x4 transpose() const {
-        return Matrix4x4(
-            m[0][0], m[1][0], m[2][0], m[3][0],
-            m[0][1], m[1][1], m[2][1], m[3][1],
-            m[0][2], m[1][2], m[2][2], m[3][2],
-            m[0][3], m[1][3], m[2][3], m[3][3]
-        );
-    };
-    float cofactor(int r, int c) const {
-        float c_array[3][3];
-        int row_index = -1;
-        int column_index = -1;
-        for (int i = 0; i < r; i++) {
-            row_index++;
-            column_index = -1;
-            for (int j = 0; j < c; j++) {
-                column_index++;
-                c_array[row_index][column_index] = m[i][j];
-            }
-            for (int j = c + 1; j < 4; j++) {
-                column_index++;
-                c_array[row_index][column_index] = m[i][j];
-            }
-        }
-        for (int i = r + 1; i < 4; i++) {
-            row_index++;
-            column_index = -1;
-            for (int j = 0; j < c; j++) {
-                column_index++;
-                c_array[row_index][column_index] = m[i][j];
-            }
-            for (int j = c + 1; j < 4; j++) {
-                column_index++;
-                c_array[row_index][column_index] = m[i][j];
-            }
-        }
-
-        float result = {
-            c_array[0][0] * c_array[1][1] * c_array[2][2] +
-            c_array[1][0] * c_array[2][1] * c_array[0][2] +
-            c_array[2][0] * c_array[0][1] * c_array[1][2] -
-            c_array[0][2] * c_array[1][1] * c_array[2][0] -
-            c_array[1][2] * c_array[2][1] * c_array[0][0] -
-            c_array[2][2] * c_array[0][1] * c_array[1][0]
-        };
-
-        return ((r + c) % 2 == 0) ? result : -result;
-    }
-    float determinant() const {
-        float result = 0.0f;
-        for (int i = 0; i < 4; i++) {
-            result += (m[0][i] * cofactor(0, i));
-        }
-
-        return result;
-    }
-    Matrix4x4 inverse() const;     // 역행렬 (카메라에서 핵심)
-
+    // < static function >
     // matrix function
     static Matrix4x4 identity();
     static Matrix4x4 zero();
@@ -130,7 +55,87 @@ struct Matrix4x4 {
     
 };
 
+// matrix operation
+Matrix4x4 Matrix4x4::operator+(const Matrix4x4& mat) const {
+    return Matrix4x4(
+        m[0][0] + mat.m[0][0], m[0][1] + mat.m[0][1], m[0][2] + mat.m[0][2], m[0][3] + mat.m[0][3],
+        m[1][0] + mat.m[1][0], m[1][1] + mat.m[1][1], m[1][2] + mat.m[1][2], m[1][3] + mat.m[1][3],
+        m[2][0] + mat.m[2][0], m[2][1] + mat.m[2][1], m[2][2] + mat.m[2][2], m[2][3] + mat.m[2][3],
+        m[3][0] + mat.m[3][0], m[3][1] + mat.m[3][1], m[3][2] + mat.m[3][2], m[3][3] + mat.m[3][3]
+    );
+}
+Matrix4x4 Matrix4x4::operator*(float scalar) const {
+    return Matrix4x4(
+        m[0][0] * scalar, m[0][1] * scalar, m[0][2] * scalar, m[0][3] * scalar,
+        m[1][0] * scalar, m[1][1] * scalar, m[1][2] * scalar, m[1][3] * scalar,
+        m[2][0] * scalar, m[2][1] * scalar, m[2][2] * scalar, m[2][3] * scalar,
+        m[3][0] * scalar, m[3][1] * scalar, m[3][2] * scalar, m[3][3] * scalar
+    );
+}
+Matrix4x4 Matrix4x4::operator*(const Matrix4x4& mat) const {
+    Matrix4x4 result;
+    result = result.zero();
+
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            for (int k = 0; k < 4; k++) {
+                result.m[i][j] += m[i][k] * mat.m[k][j];
+            }
+        }
+    }
+
+    return result;
+}
+
 // matrix function
+float Matrix4x4::cofactor(int r, int c) const {
+    float c_array[3][3];
+    int row_index = -1;
+    int column_index = -1;
+    for (int i = 0; i < r; i++) {
+        row_index++;
+        column_index = -1;
+        for (int j = 0; j < c; j++) {
+            column_index++;
+            c_array[row_index][column_index] = m[i][j];
+        }
+        for (int j = c + 1; j < 4; j++) {
+            column_index++;
+            c_array[row_index][column_index] = m[i][j];
+        }
+    }
+    for (int i = r + 1; i < 4; i++) {
+        row_index++;
+        column_index = -1;
+        for (int j = 0; j < c; j++) {
+            column_index++;
+            c_array[row_index][column_index] = m[i][j];
+        }
+        for (int j = c + 1; j < 4; j++) {
+            column_index++;
+            c_array[row_index][column_index] = m[i][j];
+        }
+    }
+
+    float result = {
+        c_array[0][0] * c_array[1][1] * c_array[2][2] +
+        c_array[1][0] * c_array[2][1] * c_array[0][2] +
+        c_array[2][0] * c_array[0][1] * c_array[1][2] -
+        c_array[0][2] * c_array[1][1] * c_array[2][0] -
+        c_array[1][2] * c_array[2][1] * c_array[0][0] -
+        c_array[2][2] * c_array[0][1] * c_array[1][0]
+    };
+
+    return ((r + c) % 2 == 0) ? result : -result;
+}
+float Matrix4x4::determinant() const {
+    float result = 0.0f;
+    for (int i = 0; i < 4; i++) {
+        result += (m[0][i] * cofactor(0, i));
+    }
+
+    return result;
+}
 Matrix4x4 Matrix4x4::identity() {
     return Matrix4x4();
 }
@@ -143,6 +148,52 @@ Matrix4x4 Matrix4x4::zero() {
     }
 
     return mat;
+}
+Matrix4x4 Matrix4x4::transpose() const {
+    return Matrix4x4(
+        m[0][0], m[1][0], m[2][0], m[3][0],
+        m[0][1], m[1][1], m[2][1], m[3][1],
+        m[0][2], m[1][2], m[2][2], m[3][2],
+        m[0][3], m[1][3], m[2][3], m[3][3]
+    );
+};
+Matrix4x4 Matrix4x4::inverse() const {
+    float det_value = determinant();
+
+    if (nearlyEqual(det_value, 0.0f)) return zero();
+    else {
+        Matrix4x4 adj_mat = Matrix4x4(
+            cofactor(0, 0), cofactor(1, 0), cofactor(2, 0), cofactor(3, 0),
+            cofactor(0, 1), cofactor(1, 1), cofactor(2, 1), cofactor(3, 1),
+            cofactor(0, 2), cofactor(1, 2), cofactor(2, 2), cofactor(3, 2),
+            cofactor(0, 3), cofactor(1, 3), cofactor(2, 3), cofactor(3, 3)
+        );
+
+        return adj_mat * (1.0f / det_value);
+    }
+}
+Matrix4x4 Matrix4x4::orthogonalize() const {
+    // extract row vectors 3x3 Matrix
+    Vector3f r0(m[0][0], m[0][1], m[0][2]);
+    Vector3f r1(m[1][0], m[1][1], m[1][2]);
+    Vector3f r2(m[2][0], m[2][1], m[2][2]);
+
+    // Modified Gram-Schmidt
+    r0 = r0.normalize();
+
+    r1 = r1 - r0 * r0.dot(r1);
+    r1 = r1.normalize();
+
+    r2 = r2 - r0 * r0.dot(r2);
+    r2 = r2 - r1 * r1.dot(r2);
+    r2 = r2.normalize();
+
+    return Matrix4x4(
+        r0.x, r0.y, r0.z, 0.0f,
+        r1.x, r1.y, r1.z, 0.0f,
+        r2.x, r2.y, r2.z, 0.0f,
+        m[3][0], m[3][1], m[3][2], m[3][3]  // translation
+    );
 }
 
 // rotation(affine transformation)

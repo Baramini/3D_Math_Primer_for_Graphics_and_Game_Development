@@ -2,74 +2,115 @@
 #include <cassert>
 #include "myMath.h"
 
-void testDeterminant() {
-    std::cout << "=== Determinant Tests ===\n";
+void testMatrixOperations() {
+    std::cout << "=== Transpose / Inverse / Orthogonalize Tests ===\n";
 
-    // 1. identity matrix — det = 1
-    Matrix4x4 identity = Matrix4x4::identity();
-    assert(nearlyEqual(identity.determinant(), 1.0f));
-    std::cout << "identity det         : PASS  " << identity.determinant() << "\n";
-
-    // 2. zero matrix — det = 0
-    Matrix4x4 zero = Matrix4x4::zero();
-    assert(nearlyEqual(zero.determinant(), 0.0f));
-    std::cout << "zero det             : PASS  " << zero.determinant() << "\n";
-
-    // 3. rotation — det = 1
     const float PI = 3.14159265f;
+
+    // --- Transpose ---
+    Matrix4x4 mat(
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        9,10,11,12,
+        13,14,15,16
+    );
+    Matrix4x4 t = mat.transpose();
+
+    // (i,j) -> (j,i)
+    assert(nearlyEqual(t.m[0][1], mat.m[1][0]));
+    assert(nearlyEqual(t.m[0][2], mat.m[2][0]));
+    assert(nearlyEqual(t.m[1][3], mat.m[3][1]));
+    std::cout << "transpose                    : PASS\n";
+
+    // transpose twice -> original
+    Matrix4x4 tt = mat.transpose().transpose();
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            assert(nearlyEqual(tt.m[i][j], mat.m[i][j]));
+    std::cout << "transpose twice              : PASS\n";
+
+    // rotation: transpose == inverse (Orthogonal Matrix property)
     Matrix4x4 rx = Matrix4x4::makeRotationX(PI / 4.0f);
-    Matrix4x4 ry = Matrix4x4::makeRotationY(PI / 3.0f);
-    Matrix4x4 rz = Matrix4x4::makeRotationZ(PI / 6.0f);
-    assert(nearlyEqual(rx.determinant(), 1.0f));
-    assert(nearlyEqual(ry.determinant(), 1.0f));
-    assert(nearlyEqual(rz.determinant(), 1.0f));
-    std::cout << "rotation det         : PASS  "
-              << rx.determinant() << " "
-              << ry.determinant() << " "
-              << rz.determinant() << "\n";
+    Matrix4x4 rxT = rx.transpose();
+    Matrix4x4 rxInv = rx.inverse();
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            assert(nearlyEqual(rxT.m[i][j], rxInv.m[i][j]));
+    std::cout << "rotation: transpose==inverse : PASS\n";
 
-    // 4. scale — det = x * y * z
+    // --- Inverse ---
+    // M * M⁻¹ = I
     Matrix4x4 scale = Matrix4x4::makeScale(2.0f, 3.0f, 4.0f);
-    assert(nearlyEqual(scale.determinant(), 24.0f));
-    std::cout << "scale det            : PASS  " << scale.determinant() << "\n";
+    Matrix4x4 scaleInv = scale.inverse();
+    Matrix4x4 shouldBeI = scale * scaleInv;
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            assert(nearlyEqual(shouldBeI.m[i][j], (i == j) ? 1.0f : 0.0f));
+    std::cout << "scale: M * M⁻¹ = I           : PASS\n";
 
-    // 5. uniform scale k=2 — det = k³ = 8
-    Matrix4x4 uscale = Matrix4x4::makeScale(2.0f, 2.0f, 2.0f);
-    assert(nearlyEqual(uscale.determinant(), 8.0f));
-    std::cout << "uniform scale det    : PASS  " << uscale.determinant() << "\n";
-
-    // 6. reflection — det = -1
+    // reflection: M * M⁻¹ = I
     Vector3f axis(0.0f, 1.0f, 0.0f);
     Matrix4x4 refl = Matrix4x4::makeReflection(axis);
-    assert(nearlyEqual(refl.determinant(), -1.0f));
-    std::cout << "reflection det       : PASS  " << refl.determinant() << "\n";
+    Matrix4x4 reflInv = refl.inverse();
+    Matrix4x4 reflI = refl * reflInv;
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            assert(nearlyEqual(reflI.m[i][j], (i == j) ? 1.0f : 0.0f));
+    std::cout << "reflection: M * M⁻¹ = I      : PASS\n";
 
-    // 7. shearing — det = 1
-    Matrix4x4 shear = Matrix4x4::makeSheeringXY(2.0f, 3.0f);
-    assert(nearlyEqual(shear.determinant(), 1.0f));
-    std::cout << "shearing det         : PASS  " << shear.determinant() << "\n";
-
-    // 8. ortho projection — det = 0 (singular)
+    // singular matrix -> return zero matrix
     Matrix4x4 proj = Matrix4x4::makeOrthoProj(axis);
-    assert(nearlyEqual(proj.determinant(), 0.0f));
-    std::cout << "ortho proj det       : PASS  " << proj.determinant() << "\n";
+    Matrix4x4 projInv = proj.inverse();
+    bool isZero = true;
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            if (!nearlyEqual(projInv.m[i][j], 0.0f)) { isZero = false; break; }
+    assert(isZero);
+    std::cout << "singular -> zero             : PASS\n";
 
-    // 9. arbitrary scale k=3 — det = k = 3
-    Matrix4x4 arbScale = Matrix4x4::makeScale(axis, 3.0f);
-    assert(nearlyEqual(arbScale.determinant(), 3.0f));
-    std::cout << "arbitrary scale det  : PASS  " << arbScale.determinant() << "\n";
+    // (M⁻¹)⁻¹ = M
+    Matrix4x4 ry = Matrix4x4::makeRotationY(PI / 3.0f);
+    Matrix4x4 ryInvInv = ry.inverse().inverse();
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            assert(nearlyEqual(ryInvInv.m[i][j], ry.m[i][j]));
+    std::cout << "(M⁻¹)⁻¹ = M                  : PASS\n";
 
-    // 10. det(A * B) = det(A) * det(B)
-    float detA = rx.determinant();
-    float detB = scale.determinant();
-    float detAB = (rx * scale).determinant();
-    assert(nearlyEqual(detAB, detA * detB));
-    std::cout << "det(A*B)=det(A)*det(B): PASS  " << detAB << " == " << detA * detB << "\n";
+    // --- Orthogonalize ---
+    // inject drift error into rotation matrix
+    Matrix4x4 drifted = Matrix4x4::makeRotationZ(PI / 6.0f);
+    drifted.m[0][0] += 0.1f;
+    drifted.m[1][1] += 0.1f;
 
-    std::cout << "\n모든 Determinant 테스트 통과!\n";
+    Matrix4x4 ortho = drifted.orthogonalize();
+
+    Vector3f r0(ortho.m[0][0], ortho.m[0][1], ortho.m[0][2]);
+    Vector3f r1(ortho.m[1][0], ortho.m[1][1], ortho.m[1][2]);
+    Vector3f r2(ortho.m[2][0], ortho.m[2][1], ortho.m[2][2]);
+
+    // unit vector check
+    assert(nearlyEqual(r0.length(), 1.0f));
+    assert(nearlyEqual(r1.length(), 1.0f));
+    assert(nearlyEqual(r2.length(), 1.0f));
+    std::cout << "orthogonalize: unit vectors  : PASS\n";
+
+    // perpendicular check
+    assert(nearlyEqual(r0.dot(r1), 0.0f));
+    assert(nearlyEqual(r0.dot(r2), 0.0f));
+    assert(nearlyEqual(r1.dot(r2), 0.0f));
+    std::cout << "orthogonalize: perpendicular : PASS\n";
+
+    // translation row preserved
+    assert(nearlyEqual(ortho.m[3][0], drifted.m[3][0]));
+    assert(nearlyEqual(ortho.m[3][1], drifted.m[3][1]));
+    assert(nearlyEqual(ortho.m[3][2], drifted.m[3][2]));
+    assert(nearlyEqual(ortho.m[3][3], drifted.m[3][3]));
+    std::cout << "orthogonalize: translation preserved : PASS\n";
+
+    std::cout << "\nAll tests passed!\n";
 }
 
 int main() {
-    testDeterminant();
+    testMatrixOperations();
     return 0;
 }

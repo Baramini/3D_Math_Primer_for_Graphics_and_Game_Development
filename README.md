@@ -109,6 +109,15 @@ GameMath/
 | `operator*(float)` | Scalar multiplication |
 | `operator*(Matrix4x4)` | Matrix multiplication |
 
+**Matrix Operations**
+| Function | Description |
+|---|---|
+| `cofactor(r, c)` | Cofactor of element at row r, column c |
+| `determinant()` | Determinant via cofactor expansion |
+| `transpose()` | Transpose matrix |
+| `inverse()` | Inverse matrix via Classical Adjoint |
+| `orthogonalize()` | Reorthogonalize rotation part via Modified Gram-Schmidt |
+
 **Linear Transforms**
 | Function | Description |
 |---|---|
@@ -120,21 +129,13 @@ GameMath/
 | `makeScale(vec, k)` | Scale matrix along arbitrary axis |
 | `makeOrthoProj(vec)` | Orthographic projection onto plane (equivalent to makeScale k=0) |
 | `makeReflection(vec)` | Reflection about plane (equivalent to makeScale k=-1) |
-| `makeShearingXY(x, y)` | Shear X and Y by Z |
-| `makeShearingYZ(y, z)` | Shear Y and Z by X |
-| `makeShearingXZ(x, z)` | Shear X and Z by Y |
-
-**Matrix Operations**
-| Function | Description |
-|---|---|
-| `cofactor(r, c)` | Cofactor of element at row r, column c |
-| `determinant()` | Determinant via cofactor expansion |
+| `makeShearingXY(s_x, s_y)` | Shear X and Y by Z |
+| `makeShearingYZ(s_y, s_z)` | Shear Y and Z by X |
+| `makeShearingXZ(s_x, s_z)` | Shear X and Z by Y |
 
 **Pending Implementation**
 | Function | Description |
 |---|---|
-| `transpose()` | Transpose matrix |
-| `inverse()` | Inverse matrix |
 | `makeTranslation(x, y, z)` | Translation matrix |
 
 ### ✅ CoordinateSpace
@@ -155,7 +156,7 @@ GameMath/
 ---
 
 ### 🔲 Coming Soon
-- `Matrix4x4` — Full implementation (transpose, inverse, translation)
+- `Matrix4x4` — makeTranslation
 - `Quaternion` — Rotation representation
 - `Camera` — View / Projection transformation (OpenGL integration)
 - `Collider` — AABB, Sphere collision detection
