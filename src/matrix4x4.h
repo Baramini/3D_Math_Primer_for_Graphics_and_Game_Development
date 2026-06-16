@@ -31,6 +31,20 @@ struct Matrix4x4 {
     Matrix4x4 transpose() const;
     Matrix4x4 inverse() const;
     Matrix4x4 orthogonalize() const;
+    void printComponents() const;
+
+    Matrix4x4 rotate(Vector3f vec, float angle) const;
+    Matrix4x4 rotateX(float angle) const;
+    Matrix4x4 rotateY(float angle) const;
+    Matrix4x4 rotateZ(float angle) const;
+    Matrix4x4 scale(float x, float y, float z) const;
+    Matrix4x4 scale(Vector3f vec, float k) const;
+    Matrix4x4 project(Vector3f vec) const;
+    Matrix4x4 reflect(Vector3f vec) const;
+    Matrix4x4 sheerXY(float s_x, float s_y) const;
+    Matrix4x4 sheerYZ(float s_y, float s_z) const;
+    Matrix4x4 sheerXZ(float s_x, float s_z) const;
+    Matrix4x4 translate(float x, float y, float z) const;
 
     // < static function >
     // matrix function
@@ -45,8 +59,10 @@ struct Matrix4x4 {
 
     static Matrix4x4 makeScale(float x, float y, float z);
     static Matrix4x4 makeScale(Vector3f vec, float k);
+
     static Matrix4x4 makeOrthoProj(Vector3f vec);
     static Matrix4x4 makeReflection(Vector3f vec);
+
     static Matrix4x4 makeSheeringXY(float s_x, float s_y);
     static Matrix4x4 makeSheeringYZ(float s_y, float s_z);
     static Matrix4x4 makeSheeringXZ(float s_x, float s_z);
@@ -195,11 +211,34 @@ Matrix4x4 Matrix4x4::orthogonalize() const {
         m[3][0], m[3][1], m[3][2], m[3][3]  // translation
     );
 }
+void Matrix4x4::printComponents() const {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            printf("%12.6f\t", m[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+Matrix4x4 Matrix4x4::rotate(Vector3f vec, float angle) const { return (*this) * makeRotation(vec, angle); }
+Matrix4x4 Matrix4x4::rotateX(float angle) const { return (*this) * makeRotationX(angle); }
+Matrix4x4 Matrix4x4::rotateY(float angle) const { return (*this) * makeRotationY(angle); }
+Matrix4x4 Matrix4x4::rotateZ(float angle) const { return (*this) * makeRotationZ(angle); }
+Matrix4x4 Matrix4x4::scale(float x, float y, float z) const { return (*this) * makeScale(x, y, z); }
+Matrix4x4 Matrix4x4::scale(Vector3f vec, float k) const { return (*this) * makeScale(vec, k); }
+Matrix4x4 Matrix4x4::project(Vector3f vec) const { return (*this) * makeOrthoProj(vec); }
+Matrix4x4 Matrix4x4::reflect(Vector3f vec) const { return (*this) * makeReflection(vec); }
+Matrix4x4 Matrix4x4::sheerXY(float s_x, float s_y) const { return (*this) * makeSheeringXY(s_x, s_y); }
+Matrix4x4 Matrix4x4::sheerYZ(float s_y, float s_z) const { return (*this) * makeSheeringYZ(s_y, s_z); }
+Matrix4x4 Matrix4x4::sheerXZ(float s_x, float s_z) const { return (*this) * makeSheeringXZ(s_x, s_z); }
+Matrix4x4 Matrix4x4::translate(float x, float y, float z) const { return (*this) * makeTranslation(x, y, z); }
 
 // rotation(affine transformation)
 Matrix4x4 Matrix4x4::makeRotationX(float angle) {
-    float cos_value = cosf(angle);
-    float sin_value = sinf(angle);
+    float rad = angle * 3.14159265f / 180.0f;
+    float cos_value = cosf(rad);
+    float sin_value = sinf(rad);
 
     return Matrix4x4(
         1.0f, 0.0f, 0.0f, 0.0f,
@@ -209,8 +248,9 @@ Matrix4x4 Matrix4x4::makeRotationX(float angle) {
     );
 }
 Matrix4x4 Matrix4x4::makeRotationY(float angle) {
-    float cos_value = cosf(angle);
-    float sin_value = sinf(angle);
+    float rad = angle * 3.14159265f / 180.0f;
+    float cos_value = cosf(rad);
+    float sin_value = sinf(rad);
 
     return Matrix4x4(
         cos_value, 0.0f, -sin_value, 0.0f,
@@ -220,8 +260,9 @@ Matrix4x4 Matrix4x4::makeRotationY(float angle) {
     );
 }
 Matrix4x4 Matrix4x4::makeRotationZ(float angle) {
-    float cos_value = cosf(angle);
-    float sin_value = sinf(angle);
+    float rad = angle * 3.14159265f / 180.0f;
+    float cos_value = cosf(rad);
+    float sin_value = sinf(rad);
 
     return Matrix4x4(
         cos_value, sin_value, 0.0f, 0.0f,
@@ -232,8 +273,9 @@ Matrix4x4 Matrix4x4::makeRotationZ(float angle) {
 }
 Matrix4x4 Matrix4x4::makeRotation(Vector3f vec, float angle) {
     Vector3f n_vec = vec.normalize();
-    float cos_value = cosf(angle);
-    float sin_value = sinf(angle);
+    float rad = angle * 3.14159265f / 180.0f;
+    float cos_value = cosf(rad);
+    float sin_value = sinf(rad);
     float _1_sub_cos_value = 1.0f - cos_value;
 
     return Matrix4x4(
@@ -330,5 +372,15 @@ Matrix4x4 Matrix4x4::makeSheeringXZ(float s_x, float s_z) {
         s_x, 1.0f, s_z, 0.0f,
         0.0f, 0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f
+    );
+}
+
+// translation(affine transformation)
+Matrix4x4 Matrix4x4::makeTranslation(float x, float y, float z) {
+    return Matrix4x4(
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        x, y, z, 1.0f
     );
 }
