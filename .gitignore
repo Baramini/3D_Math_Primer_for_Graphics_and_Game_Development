@@ -44,5 +44,5 @@
 build/
 .vscode/
 .cache/
-CMakeCache.txt
-CMakeFiles/
+**/CMakeCache.txt
+**/CMakeFiles/

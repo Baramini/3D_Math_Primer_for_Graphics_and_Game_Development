@@ -1,3 +1,0 @@
-C:/GameMath/3D_Math_Primer_for_Graphics_and_Game_Development/build/CMakeFiles/GameMath.dir
-C:/GameMath/3D_Math_Primer_for_Graphics_and_Game_Development/build/CMakeFiles/ALL_BUILD.dir
-C:/GameMath/3D_Math_Primer_for_Graphics_and_Game_Development/build/CMakeFiles/ZERO_CHECK.dir
