@@ -14,7 +14,9 @@ int main() {
     mat2.translate(4.0f, 2.0f, 3.0f).printComponents();
     mat2.rotateX(20.0f).translate(4.0f, 2.0f, 3.0f).printComponents();
     mat2.translate(4.0f, 2.0f, 3.0f).rotateX(20.0f).printComponents();
-    mat2.translate(5.0f, 0.0f, 0.0f).project(Vector3f(1.0f, 0.0f, 0.0f)).printComponents();
+    mat2.persp_proj(5.0f).printComponents();
+
+    std::cout << PI << std::endl;
 
     return 0;
 }

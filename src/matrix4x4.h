@@ -39,12 +39,14 @@ struct Matrix4x4 {
     Matrix4x4 rotateZ(float angle) const;
     Matrix4x4 scale(float x, float y, float z) const;
     Matrix4x4 scale(Vector3f vec, float k) const;
-    Matrix4x4 project(Vector3f vec) const;
     Matrix4x4 reflect(Vector3f vec) const;
     Matrix4x4 sheerXY(float s_x, float s_y) const;
     Matrix4x4 sheerYZ(float s_y, float s_z) const;
     Matrix4x4 sheerXZ(float s_x, float s_z) const;
     Matrix4x4 translate(float x, float y, float z) const;
+
+    Matrix4x4 orth_proj(Vector3f vec) const;
+    Matrix4x4 persp_proj(float d) const;
 
     // < static function >
     // matrix function
@@ -61,6 +63,7 @@ struct Matrix4x4 {
     static Matrix4x4 makeScale(Vector3f vec, float k);
 
     static Matrix4x4 makeOrthoProj(Vector3f vec);
+    static Matrix4x4 makePerspProjZ(float d);
     static Matrix4x4 makeReflection(Vector3f vec);
 
     static Matrix4x4 makeSheeringXY(float s_x, float s_y);
@@ -227,12 +230,13 @@ Matrix4x4 Matrix4x4::rotateY(float angle) const { return (*this) * makeRotationY
 Matrix4x4 Matrix4x4::rotateZ(float angle) const { return (*this) * makeRotationZ(angle); }
 Matrix4x4 Matrix4x4::scale(float x, float y, float z) const { return (*this) * makeScale(x, y, z); }
 Matrix4x4 Matrix4x4::scale(Vector3f vec, float k) const { return (*this) * makeScale(vec, k); }
-Matrix4x4 Matrix4x4::project(Vector3f vec) const { return (*this) * makeOrthoProj(vec); }
 Matrix4x4 Matrix4x4::reflect(Vector3f vec) const { return (*this) * makeReflection(vec); }
 Matrix4x4 Matrix4x4::sheerXY(float s_x, float s_y) const { return (*this) * makeSheeringXY(s_x, s_y); }
 Matrix4x4 Matrix4x4::sheerYZ(float s_y, float s_z) const { return (*this) * makeSheeringYZ(s_y, s_z); }
 Matrix4x4 Matrix4x4::sheerXZ(float s_x, float s_z) const { return (*this) * makeSheeringXZ(s_x, s_z); }
 Matrix4x4 Matrix4x4::translate(float x, float y, float z) const { return (*this) * makeTranslation(x, y, z); }
+Matrix4x4 Matrix4x4::orth_proj(Vector3f vec) const { return (*this) * makeOrthoProj(vec); }
+Matrix4x4 Matrix4x4::persp_proj(float d) const { return (*this) * makePerspProjZ(d); }
 
 // rotation(affine transformation)
 Matrix4x4 Matrix4x4::makeRotationX(float angle) {
@@ -335,6 +339,14 @@ Matrix4x4 Matrix4x4::makeOrthoProj(Vector3f vec) {
         -n_vec.x * n_vec.z, -n_vec.y * n_vec.z, 1.0f - n_vec.z * n_vec.z, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     ); // Equivalent to makeScale() when k = 0.0f
+}
+Matrix4x4 Matrix4x4::makePerspProjZ(float d) {
+    return Matrix4x4(
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 1/d,
+        0.0f, 0.0f, 0.0f, 0.0f
+    );
 }
 
 // reflection(affine transformation)
